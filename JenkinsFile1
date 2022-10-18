@@ -1,0 +1,27 @@
+node{
+def mavenHome=tool name:"Maven3.8.2"
+stage('checkout code'){
+
+git credentialsId: '8d9f4ce6-8334-4a13-9f31-2b244e203457', url: 'https://github.com/subandevops/maven-web-application.git'
+}
+stage('Build'){
+sh"${mavenHome}/bin/mvn clean package"
+}
+stage('generate report'){
+sh"${mavenHome}/bin/mvn clean sonar:sonar"
+}
+stage('uplode artifact to nexus'){
+sh"${mavenHome}/bin/mvn clean deploy"
+}
+stage('deploy to Tomcat'){
+sshagent(['63968422-3954-4f43-8e64-0c9114dad9f1']) {
+    // some block
+sh"scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@15.206.157.54:/opt/apache-tomcat-9.0.67/webapps/"
+}
+}
+stage('send notification'){
+emailext body: '''Best Regards
+shaik suban''', subject: 'Build Over ', to: 'subanshaik784@gmail.com'
+}
+}
+
