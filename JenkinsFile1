@@ -1,12 +1,13 @@
 node{
 def mavenHome=tool name:"Maven3.8.2"
-stage('checkout code'){
+stage('checkout the the code'){
 
 git credentialsId: '8d9f4ce6-8334-4a13-9f31-2b244e203457', url: 'https://github.com/subandevops/maven-web-application.git'
 }
 stage('Build'){
 sh"${mavenHome}/bin/mvn clean package"
 }
+/*
 stage('generate report'){
 sh"${mavenHome}/bin/mvn clean sonar:sonar"
 }
@@ -23,5 +24,6 @@ stage('send notification'){
 emailext body: '''Best Regards
 shaik suban''', subject: 'Build Over ', to: 'subanshaik784@gmail.com'
 }
+/*
 }
 
